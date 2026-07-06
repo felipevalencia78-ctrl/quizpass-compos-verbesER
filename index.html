@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passé composé — Verbes en -ER</title>
+
+  <style>
+    :root {
+      --bg1: #f8f7ff;
+      --bg2: #eef2ff;
+      --bg3: #fff7ed;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #6d28d9;
+      --primary2: #4f46e5;
+      --soft-purple: #ede9fe;
+      --orange: #fb923c;
+      --green: #16a34a;
+      --red: #dc2626;
+      --card: rgba(255, 255, 255, 0.88);
+      --shadow: 0 24px 75px rgba(79, 70, 229, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(251, 146, 60, 0.20), transparent 24%),
+        radial-gradient(circle at 92% 10%, rgba(109, 40, 217, 0.20), transparent 28%),
+        radial-gradient(circle at 55% 94%, rgba(99, 102, 241, 0.15), transparent 26%),
+        linear-gradient(135deg, var(--bg3), var(--bg1) 45%, var(--bg2));
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .welcome-wrapper {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .welcome-card {
+      width: min(675px, 100%);
+      background: var(--card);
+      border-radius: 32px;
+      padding: clamp(26px, 5vw, 46px);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-card::before {
+      content: "✦";
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      color: var(--orange);
+      font-size: 36px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: var(--soft-purple);
+      color: #5b21b6;
+      font-weight: 900;
+      font-size: 1rem;
+      margin-bottom: 22px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.05rem, 5vw, 3.1rem);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      margin-bottom: 18px;
+    }
+
+    .welcome-subtitle {
+      color: var(--muted);
+      font-size: clamp(1.02rem, 2vw, 1.2rem);
+      line-height: 1.5;
+      max-width: 560px;
+      margin: 0 auto 30px;
+    }
+
+    .name-form {
+      text-align: left;
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    label {
+      color: #4f46e5;
+      font-weight: 900;
+      font-size: 1.08rem;
+    }
+
+    input {
+      width: 100%;
+      border: 2px solid #ddd6fe;
+      border-radius: 20px;
+      padding: 17px 20px;
+      outline: none;
+      background: white;
+      color: var(--text);
+      font-size: 1.05rem;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 5px rgba(109, 40, 217, 0.12);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 20px;
+      padding: 16px 22px;
+      cursor: pointer;
+      font-weight: 950;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      box-shadow: 0 16px 32px rgba(79, 70, 229, 0.22);
+    }
+
+    .btn-soft {
+      color: #4f46e5;
+      background: #eef2ff;
+    }
+
+    .app {
+      width: min(1160px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .activity-header,
+    .panel,
+    .sentence-card,
+    .result-box {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .activity-header {
+      border-radius: 32px;
+      padding: clamp(22px, 4vw, 34px);
+      margin-bottom: 16px;
+    }
+
+    .activity-header-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .greeting {
+      font-size: clamp(1.85rem, 4vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    .activity-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.55;
+      margin: 14px 0 0;
+      max-width: 820px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 900px) {
+      .top-grid {
+        grid-template-columns: 360px 1fr;
+        align-items: stretch;
+      }
+    }
+
+    .panel {
+      border-radius: 28px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      margin-bottom: 10px;
+      color: #312e81;
+      letter-spacing: -0.02em;
+    }
+
+    .rule {
+      display: grid;
+      gap: 10px;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .formula {
+      display: inline-flex;
+      width: fit-content;
+      padding: 10px 13px;
+      border-radius: 15px;
+      background: #fff7ed;
+      color: #9a3412;
+      border: 2px solid #fed7aa;
+      font-weight: 950;
+    }
+
+    .instruction-only {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-weight: 750;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      border: 2px solid #c7d2fe;
+      background: white;
+      color: #3730a3;
+      border-radius: 15px;
+      padding: 9px 13px;
+      font-weight: 950;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.12);
+      transition: transform 0.15s, opacity 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .chip:hover,
+    .chip.selected {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      background: #f5f3ff;
+    }
+
+    .chip:active {
+      cursor: grabbing;
+    }
+
+    .chip.placed {
+      opacity: 0.34;
+      pointer-events: none;
+    }
+
+    .sentences-title {
+      margin: 18px 0 12px;
+      font-size: 1.4rem;
+      color: #312e81;
+      letter-spacing: -0.025em;
+    }
+
+    .sentences {
+      display: grid;
+      gap: 12px;
+    }
+
+    .sentence-card {
+      border-radius: 23px;
+      padding: 15px 16px;
+      line-height: 2.25;
+      font-size: clamp(1rem, 2vw, 1.13rem);
+      transition: transform 0.15s;
+    }
+
+    .sentence-card:hover {
+      transform: translateY(-1px);
+    }
+
+    .number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--soft-purple);
+      color: #5b21b6;
+      font-weight: 950;
+      margin-right: 8px;
+    }
+
+    .drop-zone {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 138px;
+      min-height: 40px;
+      margin: 0 5px;
+      padding: 3px 10px;
+      vertical-align: middle;
+      border-radius: 12px;
+      border: 2px dashed #818cf8;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-weight: 950;
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      background: #e0e7ff;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .drop-zone.filled {
+      border-style: solid;
+      background: #fff7ed;
+      color: #9a3412;
+      border-color: var(--orange);
+    }
+
+    .drop-zone.correct {
+      background: #dcfce7;
+      color: #166534;
+      border-color: var(--green);
+    }
+
+    .drop-zone.incorrect {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: var(--red);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 22px 0 0;
+    }
+
+    .result-box {
+      display: none;
+      border-radius: 24px;
+      padding: 18px;
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .result-box.visible {
+      display: block;
+    }
+
+    .result-box strong {
+      font-size: 1.45rem;
+    }
+
+    .progress {
+      height: 13px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #fb923c, #ec4899, #7c3aed);
+      transition: width 0.35s;
+    }
+
+    .small-note {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 12px 0 0;
+    }
+
+    .confetti {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 20;
+    }
+
+    .confetti span {
+      position: absolute;
+      top: -24px;
+      font-size: 23px;
+      animation: fall 1.5s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(520deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section id="welcomeScreen" class="screen active">
+    <div class="welcome-wrapper">
+      <div class="welcome-card">
+        <span class="badge">A2 · Révision</span>
+        <h1>Le passé composé avec les verbes en -ER</h1>
+        <p class="welcome-subtitle">
+          Complète les phrases avec le bon participe passé. Clique ou fais glisser les réponses.
+        </p>
+
+        <form id="nameForm" class="name-form">
+          <label for="studentName">Prénom de l'étudiant(e)</label>
+          <input id="studentName" type="text" placeholder="Ex. Felipe" required />
+          <button class="btn btn-primary" type="submit">Commencer le quiz</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="activityScreen" class="screen">
+    <main class="app">
+      <header class="activity-header">
+        <div class="activity-header-top">
+          <div>
+            <span class="badge">A2 · Révision</span>
+            <h1 id="greeting" class="greeting">Bonjour !</h1>
+          </div>
+          <button id="btnChangeName" class="btn btn-soft" type="button">Changer le prénom</button>
+        </div>
+
+        <p class="activity-subtitle">
+          Complète les phrases avec le bon participe passé. Fais glisser les participes dans les espaces vides.
+        </p>
+      </header>
+
+      <div class="top-grid">
+        <aside class="panel">
+          <h2>Petit rappel</h2>
+          <div class="rule">
+            <span>Pour les verbes réguliers en <strong>-ER</strong>, le participe passé se forme avec :</span>
+            <span class="formula">radical + é</span>
+            <span>Exemples : regarder → regardé · visiter → visité · travailler → travaillé.</span>
+          </div>
+        </aside>
+
+        <section class="panel">
+          <p class="instruction-only">
+            Fais glisser chaque participe passé dans la bonne phrase.
+            Sur téléphone, tu peux toucher un participe puis toucher l'espace vide.
+          </p>
+          <div id="wordBank" class="chips"></div>
+        </section>
+      </div>
+
+      <h2 class="sentences-title">Phrases à compléter</h2>
+      <section id="sentencesArea" class="sentences"></section>
+
+      <div class="actions">
+        <button id="btnReset" class="btn btn-soft" type="button">Réinitialiser</button>
+        <button id="btnCheck" class="btn btn-primary" type="button" disabled>Vérifier</button>
+      </div>
+
+      <section id="resultBox" class="result-box">
+        <strong id="resultText"></strong>
+        <div class="progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <p id="resultAdvice" class="small-note"></p>
+      </section>
+    </main>
+  </section>
+
+  <div id="confetti" class="confetti"></div>
+
+  <script>
+    const sentences = [
+      { text: "Hier soir, j'ai ___ un film documentaire.", answer: "regardé", infinitive: "regarder" },
+      { text: "Nous avons ___ nos valises avant le voyage.", answer: "préparé", infinitive: "préparer" },
+      { text: "Elle a ___ avec ses collègues pendant la pause.", answer: "discuté", infinitive: "discuter" },
+      { text: "Les étudiants ont ___ leur présentation devant la classe.", answer: "présenté", infinitive: "présenter" },
+      { text: "Tu as ___ tes parents de ton projet professionnel ?", answer: "informé", infinitive: "informer" },
+      { text: "J'ai ___ un café au restaurant.", answer: "commandé", infinitive: "commander" },
+      { text: "Nous avons ___ le vocabulaire avant l'examen.", answer: "révisé", infinitive: "réviser" },
+      { text: "Elles ont ___ toute la soirée.", answer: "dansé", infinitive: "danser" },
+      { text: "Il a ___ la porte de la salle.", answer: "fermé", infinitive: "fermer" },
+      { text: "Vous avez ___ un musée pendant votre séjour.", answer: "visité", infinitive: "visiter" },
+      { text: "Les enfants ont ___ un très beau dessin.", answer: "dessiné", infinitive: "dessiner" },
+      { text: "J'ai ___ mon sac dans la voiture.", answer: "oublié", infinitive: "oublier" },
+      { text: "Nous avons ___ le travail à 18 heures.", answer: "terminé", infinitive: "terminer" },
+      { text: "Vous avez ___ le projet lundi dernier.", answer: "commencé", infinitive: "commencer" },
+      { text: "Tu as ___ beaucoup aujourd'hui.", answer: "travaillé", infinitive: "travailler" }
+    ];
+
+    const state = {
+      studentName: "",
+      placedWords: {},
+      selectedWord: null,
+      draggedWord: null,
+      checked: false
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function shuffle(array) {
+      return [...array].sort(() => Math.random() - 0.5);
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll(".screen").forEach((screen) => {
+        screen.classList.remove("active");
+      });
+
+      $(screenId).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startActivity(name) {
+      state.studentName = name.trim();
+      $("greeting").textContent = `Bonjour ${state.studentName} 👋`;
+      buildActivity();
+      showScreen("activityScreen");
+    }
+
+    function buildActivity() {
+      state.placedWords = {};
+      state.selectedWord = null;
+      state.draggedWord = null;
+      state.checked = false;
+
+      buildWordBank();
+      buildSentences();
+
+      $("resultBox").classList.remove("visible");
+      $("progressBar").style.width = "0";
+      updateCheckButton();
+    }
+
+    function buildWordBank() {
+      const bank = $("wordBank");
+      bank.innerHTML = "";
+
+      const words = shuffle(sentences.map((sentence) => sentence.answer));
+
+      words.forEach((word) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.textContent = word;
+        chip.dataset.word = word;
+        chip.draggable = true;
+
+        chip.addEventListener("dragstart", (event) => {
+          if (state.checked) return;
+          state.draggedWord = word;
+          event.dataTransfer.setData("text/plain", word);
+        });
+
+        chip.addEventListener("click", () => {
+          if (state.checked || chip.classList.contains("placed")) return;
+
+          state.selectedWord = state.selectedWord === word ? null : word;
+
+          document.querySelectorAll(".chip").forEach((item) => {
+            item.classList.toggle("selected", item.dataset.word === state.selectedWord);
+          });
+        });
+
+        bank.appendChild(chip);
+      });
+    }
+
+    function buildSentences() {
+      const area = $("sentencesArea");
+      area.innerHTML = "";
+
+      sentences.forEach((sentence, index) => {
+        const card = document.createElement("article");
+        card.className = "sentence-card";
+
+        const parts = sentence.text.split("___");
+        card.innerHTML = `
+          <span class="number">${index + 1}</span>
+          ${parts[0]}
+          <span class="drop-zone" data-index="${index}" title="Dépose la réponse ici"></span>
+          ${parts[1]}
+        `;
+
+        const zone = card.querySelector(".drop-zone");
+
+        zone.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          if (!state.checked) zone.classList.add("drag-over");
+        });
+
+        zone.addEventListener("dragleave", () => {
+          zone.classList.remove("drag-over");
+        });
+
+        zone.addEventListener("drop", (event) => {
+          event.preventDefault();
+          zone.classList.remove("drag-over");
+          if (state.checked) return;
+
+          const word = event.dataTransfer.getData("text/plain") || state.draggedWord;
+          placeWord(index, word);
+        });
+
+        zone.addEventListener("click", () => {
+          if (state.checked) return;
+
+          if (state.placedWords[index]) {
+            removeWord(index);
+            return;
+          }
+
+          if (state.selectedWord) {
+            placeWord(index, state.selectedWord);
+          }
+        });
+
+        area.appendChild(card);
+      });
+    }
+
+    function placeWord(index, word) {
+      if (!word) return;
+
+      const alreadyUsedIndex = Object.keys(state.placedWords).find(
+        (key) => state.placedWords[key] === word
+      );
+
+      if (alreadyUsedIndex !== undefined) {
+        removeWord(alreadyUsedIndex);
+      }
+
+      if (state.placedWords[index]) {
+        removeWord(index);
+      }
+
+      state.placedWords[index] = word;
+
+      const zone = document.querySelector(`.drop-zone[data-index="${index}"]`);
+      zone.textContent = word;
+      zone.classList.add("filled");
+      zone.classList.remove("correct", "incorrect");
+
+      state.selectedWord = null;
+      state.draggedWord = null;
+
+      syncChips();
+      updateCheckButton();
+    }
+
+    function removeWord(index) {
+      const zone = document.querySelector(`.drop-zone[data-index="${index}"]`);
+      zone.textContent = "";
+      zone.classList.remove("filled", "correct", "incorrect");
+
+      delete state.placedWords[index];
+
+      state.selectedWord = null;
+      state.draggedWord = null;
+
+      syncChips();
+      updateCheckButton();
+    }
+
+    function syncChips() {
+      const usedWords = Object.values(state.placedWords);
+
+      document.querySelectorAll(".chip").forEach((chip) => {
+        const isUsed = usedWords.includes(chip.dataset.word);
+        chip.classList.toggle("placed", isUsed);
+        chip.classList.toggle("selected", chip.dataset.word === state.selectedWord);
+      });
+    }
+
+    function updateCheckButton() {
+      $("btnCheck").disabled = Object.keys(state.placedWords).length !== sentences.length;
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      state.checked = true;
+
+      sentences.forEach((sentence, index) => {
+        const zone = document.querySelector(`.drop-zone[data-index="${index}"]`);
+        const given = state.placedWords[index];
+
+        if (given === sentence.answer) {
+          correct++;
+          zone.classList.add("correct");
+          zone.classList.remove("incorrect");
+        } else {
+          zone.classList.add("incorrect");
+          zone.classList.remove("correct");
+          zone.title = `Correction : ${sentence.answer}`;
+        }
+      });
+
+      const total = sentences.length;
+      const percent = Math.round((correct / total) * 100);
+
+      $("resultBox").classList.add("visible");
+      $("resultText").textContent = `${state.studentName}, votre score : ${correct}/${total} — ${percent}%`;
+      $("progressBar").style.width = `${percent}%`;
+      $("resultAdvice").textContent = getAdvice(percent);
+
+      $("btnCheck").disabled = true;
+
+      if (percent === 100) {
+        launchConfetti();
+      }
+
+      $("resultBox").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function getAdvice(percent) {
+      if (percent === 100) return "Excellent ! Tous les participes passés sont bien placés.";
+      if (percent >= 75) return "Très bien ! Regarde les cases rouges pour corriger les derniers détails.";
+      if (percent >= 50) return "Bon début. Rappelle-toi : pour les verbes en -ER, le participe passé finit en -é.";
+      return "Courage ! Recommence tranquillement et observe les infinitifs.";
+    }
+
+    function resetActivity() {
+      state.placedWords = {};
+      state.selectedWord = null;
+      state.draggedWord = null;
+      state.checked = false;
+
+      document.querySelectorAll(".drop-zone").forEach((zone) => {
+        zone.textContent = "";
+        zone.title = "Dépose la réponse ici";
+        zone.classList.remove("filled", "correct", "incorrect", "drag-over");
+      });
+
+      document.querySelectorAll(".chip").forEach((chip) => {
+        chip.classList.remove("placed", "selected");
+      });
+
+      $("resultBox").classList.remove("visible");
+      $("progressBar").style.width = "0";
+      updateCheckButton();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function launchConfetti() {
+      const confetti = $("confetti");
+      const emojis = ["🎉", "✨", "⭐", "💜", "🧡", "👏"];
+      confetti.innerHTML = "";
+
+      for (let i = 0; i < 48; i++) {
+        const piece = document.createElement("span");
+        piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.animationDelay = `${Math.random() * 0.45}s`;
+        confetti.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        confetti.innerHTML = "";
+      }, 2300);
+    }
+
+    $("nameForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = $("studentName").value.trim();
+      if (!name) return;
+      startActivity(name);
+    });
+
+    $("btnChangeName").addEventListener("click", () => {
+      showScreen("welcomeScreen");
+    });
+
+    $("btnCheck").addEventListener("click", checkAnswers);
+    $("btnReset").addEventListener("click", resetActivity);
+  </script>
+</body>
+</html>
